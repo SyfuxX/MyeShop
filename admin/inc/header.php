@@ -66,6 +66,13 @@ if (isset($_GET['a']) && $_GET['a'] == 'logout') {
                 </a>
               </li>
 
+              <li class="nav-item">
+                <a class="nav-link" href="./users_list.php">
+                  <span></span>
+                  User list
+                </a>
+              </li>
+
             </ul>
 
           </div>
