@@ -5,10 +5,11 @@
 
     if ($_POST)
     {
-        $req = "SELECT * FROM user WHERE username = :username";
+        $req = "SELECT * FROM user WHERE username = :username OR email = :email";
 
         $res = $con->prepare ($req);
         $res->bindValue (':username', $_POST['username'], PDO::PARAM_STR);
+        $res->bindValue (':email', $_POST['username'], PDO::PARAM_STR);
 
         $res->execute ();
 
@@ -53,15 +54,20 @@
         
         <div class="form-group">
             <div class="form-group">
-                <input class="form-control" type="text" name="username" placeholder="Your username...">
+                <input class="form-control" type="text" name="username" placeholder="Your username or email...">
             </div>
 
             <div class="form-group">
                 <input class="form-control" type="password" name="password" placeholder="Your password...">
             </div>
 
+            <div class="form-group">
+                <a href="./forget_password.php?action=forgetPassword">Forgot your password ?</a>
+            </div>
+
             <input class="btn btn-success" type="submit" value="Login">
         </div>
+
     </form>
 
 <?php 
