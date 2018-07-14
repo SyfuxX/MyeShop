@@ -3,26 +3,34 @@
 
 require_once ('./inc/header.php'); 
 
-if ($_GET['m'] == 'update')
+if (isset ($_GET['m']))
 {
-    $msg_error = "<div class='alert alert-success'>
-        User got updated...
-    </div>";
-}
-else if ($_GET['m'] == 'delete')
-{
-    $msg_error = "<div class='alert alert-success'>
-        User got successfully deleted !
-    </div>";
-}
-else if ($_GET['m'] == 'fail')
-{
-    $msg_error = "<div class='alert alert-danger'>
-        Something went wrong...
-    </div>";
+    switch ($_GET['m']) 
+    {
+        case 'update':
+            $msg_error = "<div class='alert alert-success'>
+                User got updated...
+            </div>";
+        break;
+        case 'delete':
+            $msg_error = "<div class='alert alert-success'>
+                User got successfully deleted !
+            </div>";
+        break;
+        case 'fail':
+            $msg_error = "<div class='alert alert-danger'>
+                Something went wrong...
+            </div>";
+        break;
+        default:
+            $msg_error = "<div class='alert alert-danger'>
+                Something went wrong...
+            </div>";
+        break;
+    }
 }
 
-// if update btn is triggered
+    // if update btn is triggered
 if (isset ($_GET['id']) && $_GET['action'] == 'edit' && !empty ($_GET['id']) && is_numeric ($_GET['id']))
 {
 
