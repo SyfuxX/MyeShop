@@ -23,6 +23,7 @@ define ('ROOT_TREE', $_SERVER['DOCUMENT_ROOT'] . '/PHP/6.eshop/');
 $msg_error = "";
 $page = "";
 $content = "";
+$cart = 0;
 
 require_once ('functions.php');
 
