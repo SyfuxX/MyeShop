@@ -53,6 +53,7 @@
 
                         <div class="dropdown-menu" aria-labelledby="dropdown02">
                             <a class="dropdown-item" href="<?= URL ?>profile.php">Profile</a>
+                            <a class="dropdown-item" href="<?= URL ?>profile_settings.php">Settings</a>
                             <a class="dropdown-item" href="<?= URL ?>logout.php">Logout</a>
                         </div>
                     </li>
