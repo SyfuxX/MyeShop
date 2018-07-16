@@ -72,6 +72,12 @@ if (isset($_GET['a']) && $_GET['a'] == 'logout') {
                   User list
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./order_list.php">
+                  <span></span>
+                  Order list
+                </a>
+              </li>
 
             </ul>
 

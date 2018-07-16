@@ -14,8 +14,7 @@ if (isset ($_GET['id']) && !empty ($_GET['id']) && is_numeric ($_GET['id']))
 
     $result->execute ();
 
-    if ($result->rowCount () == 1)
-    {
+    if ($result->rowCount () == 1) {
         $product = $result->fetch ();
 
         $delete_req = "DELETE FROM product WHERE id_product = $product[id_product]";
