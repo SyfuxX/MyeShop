@@ -1,7 +1,7 @@
 <?php
     require_once ('./inc/header.php');
-
     $page = "Profile";
+
 
     if (!isConnect ())
     {
@@ -18,10 +18,59 @@
         </div>";
     }
 
+    
+    // ADD PROFILE PICTURE 
+    
+    if (!empty($_FILES['profile_pic']["name"])) {
+
+        $picture_name = $_SESSION["user"]["username"] . '_ ' . '_' . time() . '_' . rand(1, 999) . '_' . $_FILES['profile_pic']['name'];
+        $picture_name = str_replace(' ', '-', $picture_name);
+
+            // we register the path of my file
+        $picture_path = ROOT_TREE . 'uploads/profile_pictures/' . $picture_name;
+
+        $max_size = 2000000;
+
+        if ($_FILES['profile_pic']['size'] > $max_size || empty($_FILES['profile_pic']['size'])) {
+            $msg_error = '<div class="alert alert-danger">
+                    Please select a 2MB file maximum !
+                </div>';
+        }
+
+        $type_picture = ['image/jpeg', 'image/png', 'image/gif'];
+
+        if (!in_array($_FILES['profile_pic']['type'], $type_picture) || empty($_FILES['profile_pic']['type'])) {
+            $msg_error = '<div class="alert alert-danger">
+                    Please select a JPEG/JPG, a PNG or a GIF file.
+                </div>';
+        } else {
+
+            $query = "UPDATE user SET picture = :picture WHERE id_user = :id_user";
+            $result = $con->prepare($query);
+            $result->bindValue(":id_user", $_SESSION['user']['id_user'], PDO::PARAM_STR);
+            $result->bindValue(":picture", $picture_name, PDO::PARAM_STR);
+            if ($result->execute()) // if request was inserted in the DTB
+            {
+                if (!empty($_FILES['profile_pic']['name'])) {
+                    copy($_FILES['profile_pic']['tmp_name'], $picture_path);
+                    $_SESSION["user"]["picture"] = $picture_name;
+                    header("location: profile.php");
+                }
+            }
+        }
+    }
+
+    // Display picture
+
+    $path = 'uploads/profile_pictures/';
+    $image = $_SESSION["user"]["picture"];
+    $picture = "<img src='" . $path . $image . "'alt='image'>";
+
+
     /*
         Delete user
     */
-    if (isset ($_GET['id']) && isset ($_GET['action']) && !empty ($_GET['id']) && !empty ($_GET['action']) && is_numeric ($_GET['id']) && $_GET['action'] == 'delete')
+    if(isset ($_GET['id']) && isset ($_GET['action']) && !empty ($_GET['id']) && !empty ($_GET['action']) && is_numeric ($_GET['id']) && $_GET['action'] == 'delete')
     {
         // show yes or cancel ?>
         <div style="position: absolute; width: 75%;" tabindex="-1" role="dialog">
@@ -67,9 +116,24 @@
         }
     }
 
+    
+    
+
 ?>
 
     <h1><?= $page ?></h1>
+
+    <h2><?= $msg_error?></h2>
+
+    <?= $picture ?>
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="profile_pic">Choose a profile picture</label>
+            <input class="btn btn-primary form-control-file" type="file" name="profile_pic" id="profile_pic">
+        </div>
+        <input class="btn btn-primary"type="submit">
+    </form>
     
     <p>Please find your informations below:</p>
 
