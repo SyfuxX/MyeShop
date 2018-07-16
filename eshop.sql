@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 14. Jul 2018 um 17:55
+-- Erstellungszeit: 16. Jul 2018 um 15:36
 -- Server-Version: 10.1.33-MariaDB
 -- PHP-Version: 7.2.6
 
@@ -29,12 +29,19 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `order` (
-  `id_oder` int(10) NOT NULL,
+  `id_order` int(10) NOT NULL,
   `id_user` int(5) DEFAULT NULL,
   `total_price` float NOT NULL,
   `datetime` datetime NOT NULL,
   `status` enum('pending','sent','cancelled','delivered') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `order`
+--
+
+INSERT INTO `order` (`id_order`, `id_user`, `total_price`, `datetime`, `status`) VALUES
+(1, 2, 59.99, '2018-07-16 12:17:26', 'pending');
 
 -- --------------------------------------------------------
 
@@ -49,6 +56,13 @@ CREATE TABLE `order_details` (
   `quantity` int(3) NOT NULL,
   `price` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `order_details`
+--
+
+INSERT INTO `order_details` (`id_order_details`, `id_order`, `id_product`, `quantity`, `price`) VALUES
+(1, 1, 2, 1, 59.99);
 
 -- --------------------------------------------------------
 
@@ -76,7 +90,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id_product`, `reference`, `category`, `title`, `description`, `color`, `size`, `gender`, `picture`, `picture2`, `price`, `stock`) VALUES
-(2, '1345', 'shoes', 'sandals', 'Don\\\'t forget the white socks ;D\r\nSALE: Buy one get free socks !', 'brown', 'xl', 'm', 'sandals_-1345_1531318301_374_socks-with-sandals.jpg', NULL, 59.99, 100),
+(2, '1345', 'shoes', 'sandals', 'Don\\\'t forget the white socks ;D\r\nSALE: Buy one get free socks !', 'brown', 'xl', 'm', 'sandals_-1345_1531318301_374_socks-with-sandals.jpg', NULL, 59.99, 99),
 (3, '5461', 'clothes', 'Tshirt', 'Just a white TShirt', 'white', 'xs', 'm', 'Tshirt_-5461_1531392844_97_front_large_extended.jpg', NULL, 49.99, 150);
 
 -- --------------------------------------------------------
@@ -112,6 +126,7 @@ CREATE TABLE `user` (
   `firstname` varchar(30) NOT NULL,
   `lastname` varchar(30) NOT NULL,
   `email` varchar(70) NOT NULL,
+  `picture` varchar(200) NOT NULL,
   `gender` enum('m','f','o') NOT NULL,
   `city` varchar(20) NOT NULL,
   `zip_code` varchar(10) NOT NULL,
@@ -123,8 +138,8 @@ CREATE TABLE `user` (
 -- Daten für Tabelle `user`
 --
 
-INSERT INTO `user` (`id_user`, `username`, `password`, `firstname`, `lastname`, `email`, `gender`, `city`, `zip_code`, `address`, `privilege`) VALUES
-(2, 'SyfuxX', '$2y$10$HLj8P50jBwN9NxIHajlwe.eK/VO6j9dr5dwT1mJVCEmw1WWykGADe', 'Dany', 'T', 'dany.thill@live.com', 'm', 'kayl', '1337', 'donotremember', 1);
+INSERT INTO `user` (`id_user`, `username`, `password`, `firstname`, `lastname`, `email`, `picture`, `gender`, `city`, `zip_code`, `address`, `privilege`) VALUES
+(2, 'SyfuxX', '$2y$10$HLj8P50jBwN9NxIHajlwe.eK/VO6j9dr5dwT1mJVCEmw1WWykGADe', 'Dany', 'T', 'dany.thill@live.com', 'SyfuxX_-_1531747030_963_emo-wallpaper_black.jpg', 'm', 'kayl', '1337', 'donotremember', 1);
 
 --
 -- Indizes der exportierten Tabellen
@@ -134,7 +149,7 @@ INSERT INTO `user` (`id_user`, `username`, `password`, `firstname`, `lastname`, 
 -- Indizes für die Tabelle `order`
 --
 ALTER TABLE `order`
-  ADD PRIMARY KEY (`id_oder`),
+  ADD PRIMARY KEY (`id_order`),
   ADD KEY `id_user` (`id_user`);
 
 --
@@ -172,13 +187,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT für Tabelle `order`
 --
 ALTER TABLE `order`
-  MODIFY `id_oder` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_order` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT für Tabelle `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id_order_details` int(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_order_details` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT für Tabelle `product`
@@ -212,7 +227,7 @@ ALTER TABLE `order`
 -- Constraints der Tabelle `order_details`
 --
 ALTER TABLE `order_details`
-  ADD CONSTRAINT `id_order` FOREIGN KEY (`id_order`) REFERENCES `order` (`id_oder`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `id_order` FOREIGN KEY (`id_order`) REFERENCES `order` (`id_order`) ON UPDATE CASCADE,
   ADD CONSTRAINT `id_product` FOREIGN KEY (`id_product`) REFERENCES `product` (`id_product`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --

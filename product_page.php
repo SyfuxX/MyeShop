@@ -19,6 +19,19 @@
         {   
             header ('location: eshop.php?m=error');
         }
+
+        if($_POST) { // si clique sur ajouter au panier
+            if (!empty($_POST['quantity']) && is_numeric($_POST['quantity']) && $_POST['quantity'] != 0) 
+            {
+                addProduct($id_product, $_POST['quantity'], $picture, $title, $price);
+                header('location:cart.php');
+            } 
+        }    
+
+        // we want to display product within the same category in order to maximpise the benefits of the website
+        $suggest_resultat = $con->query("SELECT * FROM product WHERE category = '$product_details[category]' AND id_product != '$product_details[id_product]' ORDER BY price DESC LIMIT 0,3");
+        $suggestion = $suggest_resultat->fetchAll();
+
     }
     else
     {   
@@ -42,6 +55,36 @@
         <li>Gender: <strong><?= $gender ?></strong></li>
         <li>Price: <strong stlye="color: darkblue;"><?= $price ?> €</strong><br><em>all taxes includes</em></li>
     </ul>
+
+    <?php if($stock > 0) : ?>
+        <fieldset> 
+            <legend>Buy the product : </legend>
+            <form method="post" action="">
+                <label>Quantity</label>
+                <select name="quantity" class="form-control">
+                    <?php for ($i=1; $i <= $stock; $i++) { 
+                        echo '<option>' . $i . '</option>';
+                    } ?>
+                </select>
+                <input type="submit" value="Add to cart" class="btn btn-primary">
+            </form>
+        </fieldset>
+    <?php else : ?>
+        <div class='alert alert-secondary'>Sorry, we don't have stock anymore !</div>
+    <?php endif; ?>
+
+    <div class="profil">
+        <h2>Other members also bought :</h2>
+        <?php foreach ($suggestion as $key => $value) : ?>
+            <div>
+                <h3><?= $value['title'] ?></h3>
+                <a href=""><img src="uploads/img/<?= $value['picture'] ?>" height="100"></a>
+                <p style="font-weight: bold; font-size: 20px"> <?= $value['price'] ?> €</p>
+                <p style="height: 40px"> <?= substr($value['description'], 0, 40) ?> '</p>
+                <a style="padding:5px 15px; border:1px solid red; color: red; border-radius:4px" href="product_page.php?id=<?= $value['id_product'] ?>">See the product</a>
+            </div>
+        <?php endforeach; ?>
+    </div>
     
 
 <?php 

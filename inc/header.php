@@ -67,6 +67,9 @@
 
                     <?php endif; ?>
 
+                    <li>
+                        <a class="nav-link" href="<?=URL?>cart.php"><i class="fas fa-shopping-cart"></i><?php if(productNumber()){echo'<span class="bubble">' . productNumber() . '</span>';} ?></a>
+                    </li>
 
                 </ul>
 
