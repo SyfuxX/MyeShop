@@ -62,14 +62,12 @@ require_once ('./inc/header.php');
                         $msg_error = "<div class=\"alert alert-danger\">
                             Please enter a valid email.
                         </div>";
-                    }
-                    else if($_POST['email'] != $_POST['rEmail']) {
+                    } else if($_POST['email'] != $_POST['rEmail']) {
 
                         $msg_error = "<div class=\"alert alert-danger\">
                             The emails you entered are not the same, please try again.
                         </div>";
-                    }
-                    else {
+                    } else {
 
                         $req_email = "UPDATE user SET email = :email WHERE id_user = :id_user";
                         $result_email = $con->prepare($req_email);
@@ -101,8 +99,7 @@ require_once ('./inc/header.php');
                             $result_password = $con->prepare($con);
                             $result_password->bindValue(":password", $hashed_pass, PDO::PARAM_STR);
 
-                        }
-                        else {
+                        } else {
                             $msg_error = "<div class=\"alert alert-danger\">
                             Some of the information could not be verified, please try again!
                             </div>";
@@ -155,8 +152,7 @@ require_once ('./inc/header.php');
                         $_SESSION["user"]["address"] = $_POST['address'];
                         $_SESSION["user"]["city"] = $_POST['city'];
                         $_SESSION["user"]["zip_code"] = $_POST['Zip-Code'];
-                    }
-                    else {
+                    }  else {
 
                         $msg_error = "<div class=\"alert alert-danger\">
                               Error updating address. Please try again later!
@@ -165,8 +161,7 @@ require_once ('./inc/header.php');
                 }
             }
         }
-    }
-    else {
+    } else {
 
         header("location:login.php");
     }
