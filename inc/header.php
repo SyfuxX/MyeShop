@@ -53,6 +53,7 @@
 
                         <div class="dropdown-menu" aria-labelledby="dropdown02">
                             <a class="dropdown-item" href="<?= URL ?>profile.php">Profile</a>
+                            <a class="dropdown-item" href="<?= URL ?>profile_settings.php">Settings</a>
                             <a class="dropdown-item" href="<?= URL ?>logout.php">Logout</a>
                         </div>
                     </li>
@@ -66,6 +67,9 @@
 
                     <?php endif; ?>
 
+                    <li>
+                        <a class="nav-link" href="<?=URL?>cart.php"><i class="fas fa-shopping-cart"></i><?php if(productNumber()){echo'<span class="bubble">' . productNumber() . '</span>';} ?></a>
+                    </li>
 
                 </ul>
 
