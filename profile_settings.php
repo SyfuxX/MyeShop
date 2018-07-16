@@ -34,7 +34,7 @@ require_once ('./inc/header.php');
 
         if($result->rowCount() == 1) {
 
-            debug($_POST);
+            //debug($_POST);
         
         
 
