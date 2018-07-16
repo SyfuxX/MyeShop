@@ -2,11 +2,27 @@
     require_once ('./inc/header.php');
     $page = "Profile";
 
-
     if (!isConnect ())
     {
         header ('./login.php');
     }
+
+    /*
+        Order status
+    */
+    /*
+    $uid = $_SESSION['user']['id_user'];
+    $query = "SELECT * FROM user WHERE id_user = :id";
+    $result = $con->prepare($query);
+    $result->bindValue("id", $uid, PDO::PARAM_STR);
+    $result->execute();
+
+    foreach($result->fetchAll() as $row)
+    {    
+        //echo '<div class="order">$row["order_status"]</div>';
+        echo $row[username];
+    }
+    */
 
     /*
         Messages
@@ -18,6 +34,54 @@
         </div>";
     }
 
+    /*
+        Delete user
+    */
+    if (isset ($_GET['id']) && isset ($_GET['action']) && !empty ($_GET['id']) && !empty ($_GET['action']) && is_numeric ($_GET['id']) && $_GET['action'] == 'delete')
+    {
+        // show yes or cancel ?>
+        <div style="position: absolute; width: 75%;" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete account</h5>
+                        <a href="./profile.php" class="close" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </a>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to leave our store? :c</p>
+                    </div>
+                    <div class="modal-footer">
+                        <form action="" method="POST">
+                            <input name="btn-delete" type="submit" value="Yes" class="btn btn-danger">
+                            <a href="./profile.php" class="btn btn-success">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php
+        // if yes was pressed
+        if (isset ($_POST['btn-delete']))
+        {   
+            $id_user = $_SESSION['user']['id_user'];
+
+            $del = $con->exec ("DELETE FROM user WHERE id_user = $id_user");
+
+            if ($del)
+            {
+                // successfully deleted
+                header ('location: ./logout.php');
+            }
+            else
+            {
+                header ('location: ./profile.php?m=fail');
+            }
+            
+        }
+    }
     
     // ADD PROFILE PICTURE 
     
@@ -66,59 +130,6 @@
     $image = $_SESSION["user"]["picture"];
     $picture = "<img src='" . $path . $image . "'alt='image'>";
 
-
-    /*
-        Delete user
-    */
-    if(isset ($_GET['id']) && isset ($_GET['action']) && !empty ($_GET['id']) && !empty ($_GET['action']) && is_numeric ($_GET['id']) && $_GET['action'] == 'delete')
-    {
-        // show yes or cancel ?>
-        <div style="position: absolute; width: 75%;" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Delete account</h5>
-                        <a href="./profile.php" class="close" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </a>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to leave our store? :c</p>
-                    </div>
-                    <div class="modal-footer">
-                        <form action="" method="POST">
-                            <input name="btn-delete" type="submit" value="Yes" class="btn btn-danger">
-                            <a href="./profile.php" class="btn btn-success">Cancel</a>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <?php
-        // if yes was pressed
-        if (isset ($_POST['btn-delete']))
-        {   
-            $id_user = $_SESSION['user']['id_user'];
-
-            $del = $con->exec ("DELETE FROM user WHERE id_user = $id_user");
-
-            if ($del)
-            {
-                // successfully deleted
-                header ('location: ./logout.php');
-            }
-            else
-            {
-                header ('location: ./profile.php?m=fail');
-            }
-            
-        }
-    }
-
-    
-    
-
 ?>
 
     <h1><?= $page ?></h1>
@@ -137,19 +148,46 @@
     
     <p>Please find your informations below:</p>
 
-    <ul>
-        <li>Firstname: <?= $_SESSION['user']['firstname']; ?></li>
-        <li>Lastname: <?= $_SESSION['user']['lastname']; ?></li>
-        <li>Email: <?= $_SESSION['user']['email']; ?></li>
-    </ul>
+    <div class="row">
+        <div class="col-sm-6">
 
-    <?= $msg_error; ?>
+            <div class="card" style="width: 20rem;">
+                <img class="card-img-top" src="./uploads/img/<?= $_SESSION['user']['picture']; ?>" alt="Card image cap">
+                <div class="card-body">
+                    <h3 class="card-title"><?= $_SESSION['user']['username']; ?></h3>
 
-    <div class="border container">
-        <div>
-            <h2 class="text-center">Danger zone <span class="badge badge-danger">be carefully</span></h2>
-        
-            <a href="?id=<?= $_SESSION['user']['id_user'] ?>&action=delete" class="btn btn-danger">Delete account</a>
+                    <p class="card-text">
+                        Get informations about your profile and also be able to edit or delete your profile.
+                    </p>
+                </div>
+
+                <div class="card-body">
+                    <h6 class="card-title">Personal:</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Firstname: <strong><?= $_SESSION['user']['firstname']; ?></strong></li>
+                    <li class="list-group-item">Lastname: <strong><?= $_SESSION['user']['lastname']; ?></strong></li>
+                    <li class="list-group-item">Gender: <strong><?php if ($_SESSION['user']['gender'] == 'm') { echo 'Male'; } else if ($_SESSION['user']['gender'] == 'f') { echo 'Women'; } else if ($_SESSION['user']['gender'] == 'o') { echo 'Other'; } ?></strong></li>
+                    <li class="list-group-item">Email: <strong><?= $_SESSION['user']['email']; ?></strong></li>
+                </ul>
+
+                <div class="card-body">
+                    <h6 class="card-title">Address:</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Street: <strong><?= $_SESSION['user']['address']; ?></strong></li>
+                    <li class="list-group-item">Zip-code: <strong><?= $_SESSION['user']['zip_code']; ?></strong></li>
+                    <li class="list-group-item">City: <strong><?= $_SESSION['user']['city']; ?></strong></li>
+                </ul>
+
+                <div class="card-body">
+                    <h6 class="card-title">Profile actions:</h6>
+                    <a href="./profile_settings.php" class="btn btn-success"><i class="fas fa-pencil-alt"></i> Edit</a>
+                    <a href="./logout.php" class="btn btn-primary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a href="?id=<?= $_SESSION['user']['id_user'] ?>&action=delete" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</a>
+                </div>
+            </div>
+
         </div>
     </div>
 
