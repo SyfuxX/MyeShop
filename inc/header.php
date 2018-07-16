@@ -61,7 +61,7 @@
                     <?php if (isAdmin ()) : ?>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= URL ?>admin/product_form.php">Admin Panel</a>
+                        <a class="nav-link" href="<?= URL ?>admin/">Admin Panel</a>
                     </li>
 
                     <?php endif; ?>
