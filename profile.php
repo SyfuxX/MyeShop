@@ -1,6 +1,5 @@
 <?php
     require_once ('./inc/header.php');
-
     $page = "Profile";
 
     if (!isConnect ())
@@ -24,7 +23,6 @@
         echo $row[username];
     }
     */
-
 
     /*
         Messages
@@ -84,6 +82,53 @@
             
         }
     }
+    
+    // ADD PROFILE PICTURE 
+    
+    if (!empty($_FILES['profile_pic']["name"])) {
+
+        $picture_name = $_SESSION["user"]["username"] . '_ ' . '_' . time() . '_' . rand(1, 999) . '_' . $_FILES['profile_pic']['name'];
+        $picture_name = str_replace(' ', '-', $picture_name);
+
+            // we register the path of my file
+        $picture_path = ROOT_TREE . 'uploads/profile_pictures/' . $picture_name;
+
+        $max_size = 2000000;
+
+        if ($_FILES['profile_pic']['size'] > $max_size || empty($_FILES['profile_pic']['size'])) {
+            $msg_error = '<div class="alert alert-danger">
+                    Please select a 2MB file maximum !
+                </div>';
+        }
+
+        $type_picture = ['image/jpeg', 'image/png', 'image/gif'];
+
+        if (!in_array($_FILES['profile_pic']['type'], $type_picture) || empty($_FILES['profile_pic']['type'])) {
+            $msg_error = '<div class="alert alert-danger">
+                    Please select a JPEG/JPG, a PNG or a GIF file.
+                </div>';
+        } else {
+
+            $query = "UPDATE user SET picture = :picture WHERE id_user = :id_user";
+            $result = $con->prepare($query);
+            $result->bindValue(":id_user", $_SESSION['user']['id_user'], PDO::PARAM_STR);
+            $result->bindValue(":picture", $picture_name, PDO::PARAM_STR);
+            if ($result->execute()) // if request was inserted in the DTB
+            {
+                if (!empty($_FILES['profile_pic']['name'])) {
+                    copy($_FILES['profile_pic']['tmp_name'], $picture_path);
+                    $_SESSION["user"]["picture"] = $picture_name;
+                    header("location: profile.php");
+                }
+            }
+        }
+    }
+
+    // Display picture
+
+    $path = 'uploads/profile_pictures/';
+    $image = $_SESSION["user"]["picture"];
+    $picture = "<img src='" . $path . $image . "'alt='image'>";
 
     // ADD PROFILE PICTURE 
     
@@ -183,7 +228,47 @@
     
     <h4>Please find your informations below:</h4>
 
-    <?= $msg_error; ?>
+    <?= $msg_error?>
+
+    <div class="row">
+        <div class="col-sm-6">
+
+            <div class="card" style="width: 20rem;">
+                <img class="card-img-top" src="./uploads/img/<?= $_SESSION['user']['picture']; ?>" alt="Card image cap">
+                <div class="card-body">
+                    <h3 class="card-title"><?= $_SESSION['user']['username']; ?></h3>
+
+                    <p class="card-text">
+                        Get informations about your profile and also be able to edit or delete your profile.
+                    </p>
+                </div>
+
+                <div class="card-body">
+                    <h6 class="card-title">Personal:</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Firstname: <strong><?= $_SESSION['user']['firstname']; ?></strong></li>
+                    <li class="list-group-item">Lastname: <strong><?= $_SESSION['user']['lastname']; ?></strong></li>
+                    <li class="list-group-item">Gender: <strong><?php if ($_SESSION['user']['gender'] == 'm') { echo 'Male'; } else if ($_SESSION['user']['gender'] == 'f') { echo 'Women'; } else if ($_SESSION['user']['gender'] == 'o') { echo 'Other'; } ?></strong></li>
+                    <li class="list-group-item">Email: <strong><?= $_SESSION['user']['email']; ?></strong></li>
+                </ul>
+
+                <div class="card-body">
+                    <h6 class="card-title">Address:</h6>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Street: <strong><?= $_SESSION['user']['address']; ?></strong></li>
+                    <li class="list-group-item">Zip-code: <strong><?= $_SESSION['user']['zip_code']; ?></strong></li>
+                    <li class="list-group-item">City: <strong><?= $_SESSION['user']['city']; ?></strong></li>
+                </ul>
+
+                <div class="card-body">
+                    <h6 class="card-title">Profile actions:</h6>
+                    <a href="./profile_settings.php" class="btn btn-success"><i class="fas fa-pencil-alt"></i> Edit</a>
+                    <a href="./logout.php" class="btn btn-primary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a href="?id=<?= $_SESSION['user']['id_user'] ?>&action=delete" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</a>
+                </div>
+            </div>
 
     <div class="row">
         <div class="col-sm-6">
